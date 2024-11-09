@@ -8,5 +8,6 @@ export class AccountRouter extends Router<AccountController> {
 		super(router, '/account', new AccountController());
 
 		this.post('/connect-wallet', this.controller.connectWallet);
+		this.get('/balance', this.controller.getBalance, ['auth']);
 	}
 }

@@ -1,5 +1,5 @@
 import { Helper } from '@/shared/helpers';
-import { I_Account } from '@/shared/interfaces';
+import { I_Account, I_GetBalanceSvcResult } from '@/shared/interfaces';
 
 export class AccountResponse {
 	/**
@@ -21,5 +21,16 @@ export class AccountResponse {
 			address: payload.account.address,
 			token: payload.token,
 		};
+	}
+
+	/**
+	 * Get Balance - Account Response
+	 *
+	 * @param payload
+	 * @returns
+	 */
+	public getBalance(payload: I_GetBalanceSvcResult | null) {
+		if (!payload) return null;
+		return payload;
 	}
 }

@@ -1,6 +1,7 @@
 import { JwtPayload, VerifyErrors } from 'jsonwebtoken';
+import { ContractAbi } from 'web3';
 
-import { T_NetworkType } from '@/shared/types';
+import { T_NetworkType, T_TokenName } from '@/shared/types';
 
 export interface I_Pagination {
 	total_items?: number;
@@ -41,7 +42,7 @@ export interface I_RpcConstant {
 }
 
 export interface I_ContractAddressData {
-	name: string;
+	name: T_TokenName;
 	contract_address: string;
 }
 
@@ -55,4 +56,25 @@ export interface I_Account {
 	private_key: string;
 	network_type: T_NetworkType;
 	rpc_id: number;
+}
+
+export interface I_AbiData {
+	name: T_TokenName;
+	abi: ContractAbi;
+}
+
+export interface I_AbiConstant {
+	testnet: I_AbiData[];
+	mainnet: I_AbiData[];
+}
+
+export interface I_BalanceResult {
+	token: T_TokenName;
+	amount: string;
+	amount_wei: string;
+}
+
+export interface I_GetBalanceSvcResult {
+	address: string;
+	network_type: T_NetworkType;
 }

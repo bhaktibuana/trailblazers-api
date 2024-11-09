@@ -1,8 +1,8 @@
-import Web3Js, { Web3BaseProvider } from 'web3';
+import Web3Js, { Numbers, Web3BaseProvider } from 'web3';
 import { RegisteredSubscription } from 'web3/lib/commonjs/eth.exports';
 
-import { T_NetworkType } from '@/shared/types';
-import { I_RpcData } from '@/shared/interfaces';
+import { T_NetworkType, T_TokenName } from '@/shared/types';
+import { I_BalanceResult, I_RpcData } from '@/shared/interfaces';
 import { Helper } from '@/shared/helpers';
 
 export class Web3 {
@@ -41,5 +41,60 @@ export class Web3 {
 	public connect(privateKey: string) {
 		const web3 = this.web3 as Web3Js<RegisteredSubscription>;
 		return web3.eth.accounts.privateKeyToAccount(privateKey);
+	}
+
+	/**
+	 * Get account balance by token name
+	 *
+	 * @param address
+	 * @param tokenName
+	 * @returns
+	 */
+	public async getBalance(
+		address: string,
+		tokenName: T_TokenName,
+	): Promise<I_BalanceResult | null> {
+		let result: I_BalanceResult | null;
+		let balanceWei: Numbers;
+		let balanceEther: string;
+
+		try {
+			const web3 = this.web3 as Web3Js<RegisteredSubscription>;
+
+			if (tokenName === 'eth') {
+				balanceWei = await web3.eth.getBalance(address);
+			} else {
+				const abi = Helper.getAbi(this.networkType, tokenName);
+				const contractAddress = Helper.getContractAddress(
+					this.networkType,
+					tokenName,
+				);
+
+				if (!abi) return null;
+				if (!contractAddress) return null;
+
+				const contract = new web3.eth.Contract(
+					abi.abi,
+					contractAddress.contract_address,
+				);
+
+				balanceWei = (await contract.methods
+					.balanceOf(address)
+					.call()) as Numbers;
+			}
+
+			balanceEther = web3.utils.fromWei(balanceWei, 'ether');
+
+			result = {
+				token: tokenName,
+				amount: balanceEther,
+				amount_wei: BigInt(balanceWei).toString(),
+			} as I_BalanceResult;
+		} catch (error) {
+			console.log(error);
+			result = null;
+		}
+
+		return result;
 	}
 }

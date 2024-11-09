@@ -41,4 +41,25 @@ export class AccountController extends Controller {
 			await this.catchErrorHandler(res, error, this.connectWallet.name);
 		}
 	}
+
+	/**
+	 * Get Balance - Account Controller
+	 *
+	 * @param _req
+	 * @param res
+	 */
+	public async getBalance(_req: Request, res: Response): Promise<void> {
+		try {
+			const result = await this.accountSvc.getBalance(res);
+
+			this.response(
+				res,
+				'Account balance',
+				this.STATUS_CODE.OK,
+				this.accountRes.getBalance(result),
+			);
+		} catch (error) {
+			await this.catchErrorHandler(res, error, this.getBalance.name);
+		}
+	}
 }
