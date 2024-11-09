@@ -5,6 +5,10 @@ import { TransactionController } from '@/app/controllers';
 
 export class TransactionRouter extends Router<TransactionController> {
 	constructor(router: ExpressRouter) {
-		super(router, '/account', new TransactionController());
+		super(router, '/transaction', new TransactionController());
+
+		this.get('/calculate-gas-price', this.controller.calculateGasPrice, [
+			'auth',
+		]);
 	}
 }

@@ -91,7 +91,39 @@ export class Web3 {
 				amount_wei: BigInt(balanceWei).toString(),
 			} as I_BalanceResult;
 		} catch (error) {
-			console.log(error);
+			result = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get gas price
+	 *
+	 * @param increasePercentage
+	 * @returns
+	 */
+	public async getGasPrice(increasePercentage: number) {
+		let result = null;
+
+		const baseMultiplier = 100;
+		const baseDivider = 100;
+
+		try {
+			const web3 = this.web3 as Web3Js<RegisteredSubscription>;
+
+			const gasPrice = BigInt(await web3.eth.getGasPrice());
+			const increasedGasPrice =
+				(gasPrice * BigInt(baseMultiplier + increasePercentage)) /
+				BigInt(baseDivider);
+			const gasPriceHex = web3.utils.toHex(increasedGasPrice);
+
+			result = {
+				base_gas_price: gasPrice,
+				increased_gas_price: increasedGasPrice,
+				gas_price_hex: gasPriceHex,
+			};
+		} catch (error) {
 			result = null;
 		}
 
