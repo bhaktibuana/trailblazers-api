@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+    trailblazers-api-dev:
+        image: bhaktibuana/trailblazers-api-dev:latest
+        container_name: trailblazers-api-dev
+        ports:
+            - 3050:3050
+        env_file:
+            - ../.env.dev
+        networks:
+            - trailblazers_api_dev_network
+
+networks:
+    trailblazers_api_dev_network:
+        name: trailblazers_api_dev_network

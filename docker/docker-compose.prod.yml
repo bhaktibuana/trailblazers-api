@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+    trailblazers-api:
+        image: bhaktibuana/trailblazers-api:latest
+        container_name: trailblazers-api
+        ports:
+            - 3060:3060
+        env_file:
+            - ../.env.prod
+        networks:
+            - trailblazers_api_network
+
+networks:
+    trailblazers_api_network:
+        name: trailblazers_api_network

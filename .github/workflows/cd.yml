@@ -1,0 +1,92 @@
+name: cd
+
+on:
+    workflow_run:
+        workflows: ['ci']
+        types:
+            - completed
+
+jobs:
+    cd:
+        if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Deploy to Development Server
+              if: github.event.workflow_run.head_branch == 'dev'
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  passphrase: ${{ secrets.SSH_PASSPHRASE }}
+                  port: 22
+                  script: |
+                      # Pull the latest Development Docker image
+                      docker pull ${{ secrets.DOCKER_USERNAME }}/trailblazers-api-dev:latest
+
+                      # Navigate to the application directory
+                      cd ~/app/taiko-trailblazers/trailblazers-api-dev
+                      git pull origin dev
+
+                      # Update the .env file
+                      rm -f .env.dev
+                      echo "NODE_ENV=production" >> .env.dev
+                      echo "DOCKER_ENVIRONMENT=true" > .env.dev
+                      echo "PORT=${{ secrets.DEV_PORT }}" >> .env.dev
+                      echo "BASE_URL=${{ secrets.DEV_BASE_URL }}" >> .env.dev
+                      echo "JWT_SECRET_KEY=${{ secrets.DEV_JWT_SECRET_KEY }}" >> .env.dev
+                      echo "MAIN_MYSQL_DB_HOST=${{ secrets.DEV_MAIN_MYSQL_DB_HOST }}" >> .env.dev
+                      echo "MAIN_MYSQL_DB_USER=${{ secrets.DEV_MAIN_MYSQL_DB_USER }}" >> .env.dev
+                      echo "MAIN_MYSQL_DB_PASSWORD=${{ secrets.DEV_MAIN_MYSQL_DB_PASSWORD }}" >> .env.dev
+                      echo "MAIN_MYSQL_DB_NAME=${{ secrets.DEV_MAIN_MYSQL_DB_NAME }}" >> .env.dev
+                      echo "MAIN_MYSQL_DB_PORT=${{ secrets.DEV_MAIN_MYSQL_DB_PORT }}" >> .env.dev
+                      echo "UTILITY_MONGO_DB_DSN=${{ secrets.DEV_UTILITY_MONGO_DB_DSN }}" >> .env.dev
+                      echo "UTILITY_MONGO_DB_NAME=${{ secrets.DEV_UTILITY_MONGO_DB_NAME }}" >> .env.dev
+
+                      # Restart the Docker container with the new image
+                      docker-compose -f docker/docker-compose.dev.yml up -d --force-recreate
+
+                      # Clean up unused Docker resources
+                      docker system prune -a -f
+
+            - name: Deploy to Production Server
+              if: github.event.workflow_run.head_branch == 'main' || github.event.workflow_run.head_branch == 'staging'
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  passphrase: ${{ secrets.SSH_PASSPHRASE }}
+                  port: 22
+                  script: |
+                      # Pull the latest Production Docker image
+                      docker pull ${{ secrets.DOCKER_USERNAME }}/trailblazers-api:latest
+
+                      # Navigate to the application directory
+                      cd ~/app/taiko-trailblazers/trailblazers-api
+                      git pull origin main
+
+                      # Update the .env file
+                      rm -f .env.prod
+                      echo "NODE_ENV=production" >> .env.prod
+                      echo "DOCKER_ENVIRONMENT=true" > .env.prod
+                      echo "PORT=${{ secrets.PROD_PORT }}" >> .env.prod
+                      echo "BASE_URL=${{ secrets.PROD_BASE_URL }}" >> .env.prod
+                      echo "JWT_SECRET_KEY=${{ secrets.PROD_JWT_SECRET_KEY }}" >> .env.prod
+                      echo "MAIN_MYSQL_DB_HOST=${{ secrets.PROD_MAIN_MYSQL_DB_HOST }}" >> .env.prod
+                      echo "MAIN_MYSQL_DB_USER=${{ secrets.PROD_MAIN_MYSQL_DB_USER }}" >> .env.prod
+                      echo "MAIN_MYSQL_DB_PASSWORD=${{ secrets.PROD_MAIN_MYSQL_DB_PASSWORD }}" >> .env.prod
+                      echo "MAIN_MYSQL_DB_NAME=${{ secrets.PROD_MAIN_MYSQL_DB_NAME }}" >> .env.prod
+                      echo "MAIN_MYSQL_DB_PORT=${{ secrets.PROD_MAIN_MYSQL_DB_PORT }}" >> .env.prod
+                      echo "UTILITY_MONGO_DB_DSN=${{ secrets.PROD_UTILITY_MONGO_DB_DSN }}" >> .env.prod
+                      echo "UTILITY_MONGO_DB_NAME=${{ secrets.PROD_UTILITY_MONGO_DB_NAME }}" >> .env.prod
+
+                      # Restart the Docker container with the new image
+                      docker-compose -f docker/docker-compose.prod.yml up -d --force-recreate
+
+                      # Clean up unused Docker resources
+                      docker system prune -a -f
