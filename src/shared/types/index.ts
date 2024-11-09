@@ -11,3 +11,5 @@ export type T_AppErrorData =
 export type T_Pagination = I_Pagination | null;
 
 export type T_JWTPayload = string | Buffer | object;
+
+export type T_NetworkType = 'testnet' | 'mainnet';

@@ -2,9 +2,9 @@ import crypto from 'crypto';
 import jwt, { SignOptions } from 'jsonwebtoken';
 
 import { Constant } from '@/shared/constants';
-import { T_JWTPayload } from '@/shared/types';
+import { T_JWTPayload, T_NetworkType } from '@/shared/types';
 import { Config } from '@/config';
-import { I_Pagination, I_VerifiedJWT } from '@/shared/interfaces';
+import { I_Pagination, I_RpcData, I_VerifiedJWT } from '@/shared/interfaces';
 
 export class Helper {
 	/**
@@ -98,5 +98,24 @@ export class Helper {
 			total_pages: totalPage,
 			total_items: count,
 		} as I_Pagination;
+	}
+
+	/**
+	 * Get RPC Data
+	 *
+	 * @param networkType
+	 * @param rpcId
+	 * @returns
+	 */
+	public static getRpc(
+		networkType: T_NetworkType,
+		rpcId: number = 1,
+	): I_RpcData | null {
+		const rpc = Constant.web3.RPC[networkType].filter(
+			(rpc) => rpc.id === rpcId,
+		);
+
+		if (rpc.length === 0) return null;
+		return rpc[0];
 	}
 }

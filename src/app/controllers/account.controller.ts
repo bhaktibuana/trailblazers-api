@@ -2,10 +2,18 @@ import { Request, Response } from 'express';
 
 import { Controller } from '@/shared/libs/controller.lib';
 import { ConnectWalletReqBody } from '@/transport/requests';
+import { AccountService } from '@/app/services';
+import { AccountResponse } from '@/transport/responses';
 
 export class AccountController extends Controller {
+	private accountSvc: AccountService;
+	private accountRes: AccountResponse;
+
 	constructor() {
 		super();
+
+		this.accountSvc = new AccountService();
+		this.accountRes = new AccountResponse();
 	}
 
 	/**
@@ -21,14 +29,13 @@ export class AccountController extends Controller {
 				req,
 			);
 
-			// const result = await this.userSvc.login(res, reqBody);
+			const result = await this.accountSvc.connectWallet(res, reqBody);
 
 			this.response(
 				res,
-				'Login success',
+				'Wallet connected',
 				this.STATUS_CODE.OK,
-				// this.userRes.login(result),
-				{ reqBody },
+				this.accountRes.connectWallet(result),
 			);
 		} catch (error) {
 			await this.catchErrorHandler(res, error, this.connectWallet.name);
