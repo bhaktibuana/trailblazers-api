@@ -2,9 +2,15 @@ import crypto from 'crypto';
 import jwt, { SignOptions } from 'jsonwebtoken';
 
 import { Constant } from '@/shared/constants';
-import { T_JWTPayload } from '@/shared/types';
+import { T_JWTPayload, T_NetworkType, T_TokenName } from '@/shared/types';
 import { Config } from '@/config';
-import { I_Pagination, I_VerifiedJWT } from '@/shared/interfaces';
+import {
+	I_AbiData,
+	I_ContractAddressData,
+	I_Pagination,
+	I_RpcData,
+	I_VerifiedJWT,
+} from '@/shared/interfaces';
 
 export class Helper {
 	/**
@@ -98,5 +104,62 @@ export class Helper {
 			total_pages: totalPage,
 			total_items: count,
 		} as I_Pagination;
+	}
+
+	/**
+	 * Get RPC Data
+	 *
+	 * @param networkType
+	 * @param rpcId
+	 * @returns
+	 */
+	public static getRpc(
+		networkType: T_NetworkType,
+		rpcId: number = 1,
+	): I_RpcData | null {
+		const rpc = Constant.web3.RPC[networkType].find(
+			(rpc) => rpc.id === rpcId,
+		);
+
+		if (!rpc) return null;
+		return rpc;
+	}
+
+	/**
+	 * Get Contract Address Data
+	 *
+	 * @param networkType
+	 * @param tokenName
+	 * @returns
+	 */
+	public static getContractAddress(
+		networkType: T_NetworkType,
+		tokenName: T_TokenName,
+	): I_ContractAddressData | null {
+		const ca = Constant.web3.CA[networkType].find(
+			(ca) => ca.name === tokenName,
+		);
+
+		if (!ca) return null;
+		return ca;
+	}
+
+	/**
+	 * Get ABI Data
+	 *
+	 * @param networkType
+	 * @param tokenName
+	 * @returns
+	 */
+	public static getAbi(
+		networkType: T_NetworkType,
+		tokenName: T_TokenName,
+	): I_AbiData | null {
+		const abi = Constant.web3.ABI[networkType].find(
+			(abi) => abi.name === tokenName,
+		);
+
+		if (!abi) return null;
+		return abi;
 	}
 }
