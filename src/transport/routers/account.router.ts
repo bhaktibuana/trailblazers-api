@@ -6,5 +6,7 @@ import { AccountController } from '@/app/controllers';
 export class ExampleRouter extends Router<AccountController> {
 	constructor(router: ExpressRouter) {
 		super(router, '/account', new AccountController());
+
+		this.post('/connect-wallet', this.controller.connectWallet);
 	}
 }
