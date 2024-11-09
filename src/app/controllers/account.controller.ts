@@ -1,6 +1,6 @@
 import { Controller } from '@/shared/libs/controller.lib';
 
-export class ExampleController extends Controller {
+export class AccountController extends Controller {
 	constructor() {
 		super();
 	}
