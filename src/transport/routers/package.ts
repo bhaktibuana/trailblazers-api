@@ -1,1 +1,1 @@
-export * from '@/transport/routers/example.router';
+export * from '@/transport/routers/account.router';
