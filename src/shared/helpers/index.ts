@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import jwt, { SignOptions } from 'jsonwebtoken';
+import dayjs from 'dayjs';
 
 import { Constant } from '@/shared/constants';
 import { T_JWTPayload, T_NetworkType, T_TokenName } from '@/shared/types';
@@ -161,5 +162,30 @@ export class Helper {
 
 		if (!abi) return null;
 		return abi;
+	}
+
+	/**
+	 * Get RPC List
+	 *
+	 * @param networkType
+	 * @returns
+	 */
+	public static getRpcList(networkType: T_NetworkType): I_RpcData[] {
+		return Constant.web3.RPC[networkType];
+	}
+
+	/**
+	 * Generate Diff Time (mm:ss)
+	 *
+	 * @param startDate
+	 * @returns
+	 */
+	public static generateDiffTimeMS(startDate: Date) {
+		const startedAt = dayjs(startDate);
+		const finishedAt = dayjs();
+		const differenceInSeconds = finishedAt.diff(startedAt, 'seconds');
+		const minutes = Math.floor(differenceInSeconds / 60);
+		const seconds = differenceInSeconds % 60;
+		return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 	}
 }
