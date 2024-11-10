@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 
 import { Controller } from '@/shared/libs/controller.lib';
-import { CalculateGasPriceReqQuery } from '@/transport/requests';
+import {
+	CalculateGasPriceReqQuery,
+	RpcListReqQuery,
+} from '@/transport/requests';
 import { TransactionService } from '@/app/services';
 import { TransactionResponse } from '@/transport/responses';
 
@@ -36,7 +39,7 @@ export class TransactionController extends Controller {
 
 			this.response(
 				res,
-				'Wallet connected',
+				'Gas price',
 				this.STATUS_CODE.OK,
 				this.transactionRes.calculateGasPrice(result),
 			);
@@ -46,6 +49,29 @@ export class TransactionController extends Controller {
 				error,
 				this.calculateGasPrice.name,
 			);
+		}
+	}
+
+	/**
+	 * Get RPC List - Transaction Controller
+	 *
+	 * @param req
+	 * @param res
+	 */
+	public async rpcList(req: Request, res: Response): Promise<void> {
+		try {
+			const reqQuery = await this.getRequestQuery(RpcListReqQuery, req);
+
+			const result = await this.transactionSvc.rpcList(res, reqQuery);
+
+			this.response(
+				res,
+				'Wallet connected',
+				this.STATUS_CODE.OK,
+				this.transactionRes.rpcList(result),
+			);
+		} catch (error) {
+			await this.catchErrorHandler(res, error, this.rpcList.name);
 		}
 	}
 }

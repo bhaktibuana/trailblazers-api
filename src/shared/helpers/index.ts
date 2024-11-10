@@ -162,4 +162,14 @@ export class Helper {
 		if (!abi) return null;
 		return abi;
 	}
+
+	/**
+	 * Get RPC List
+	 *
+	 * @param networkType
+	 * @returns
+	 */
+	public static getRpcList(networkType: T_NetworkType): I_RpcData[] {
+		return Constant.web3.RPC[networkType];
+	}
 }

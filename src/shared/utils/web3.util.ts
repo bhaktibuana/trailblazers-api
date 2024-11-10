@@ -1,8 +1,9 @@
 import Web3Js, { Numbers, Web3BaseProvider } from 'web3';
 import { RegisteredSubscription } from 'web3/lib/commonjs/eth.exports';
+import dayjs from 'dayjs';
 
 import { T_NetworkType, T_TokenName } from '@/shared/types';
-import { I_BalanceResult, I_RpcData } from '@/shared/interfaces';
+import { I_BalanceResult, I_RpcData, I_RpcLatency } from '@/shared/interfaces';
 import { Helper } from '@/shared/helpers';
 
 export class Web3 {
@@ -125,6 +126,33 @@ export class Web3 {
 			};
 		} catch (error) {
 			result = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get RPC Latency
+	 *
+	 * @param rpc
+	 * @returns
+	 */
+	public async getRpcLatency(rpc: I_RpcData): Promise<I_RpcLatency> {
+		const web3Provider = new Web3Js.providers.HttpProvider(rpc.url);
+		const web3 = new Web3Js(web3Provider);
+
+		const result = {
+			is_online: false,
+			latency: 0,
+		};
+		try {
+			const start = dayjs();
+			await web3.eth.getBlockNumber();
+			result.latency = dayjs().diff(start);
+			result.is_online = true;
+		} catch (error) {
+			result.latency = 0;
+			result.is_online = false;
 		}
 
 		return result;

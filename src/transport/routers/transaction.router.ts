@@ -10,5 +10,6 @@ export class TransactionRouter extends Router<TransactionController> {
 		this.get('/calculate-gas-price', this.controller.calculateGasPrice, [
 			'auth',
 		]);
+		this.get('/rpc-list', this.controller.rpcList);
 	}
 }
