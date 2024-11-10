@@ -31,7 +31,7 @@ export class TransactionHistoryController extends Controller {
 
 			this.responsePagination(
 				res,
-				'Wallet connected',
+				'Transaction history',
 				this.STATUS_CODE.OK,
 				this.transactionHistoryRes.list(results),
 				pagination,

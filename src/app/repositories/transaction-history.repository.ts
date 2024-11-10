@@ -169,7 +169,20 @@ export class TransactionHistoryRepository extends Repository {
 		}
 
 		try {
-			const count = await TransactionHistory.count({ where });
+			const count = await TransactionHistory.count({
+				where,
+				include: [
+					{
+						model: Transaction,
+						as: 'transaction',
+						where: {
+							address: payload.address,
+							network_type: payload.network_type,
+						},
+						attributes: ['id'],
+					},
+				],
+			});
 
 			result.transaction_histories = await TransactionHistory.findAll({
 				where,
