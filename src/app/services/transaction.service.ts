@@ -664,34 +664,23 @@ export class TransactionService extends Service {
 							'ether',
 						);
 
-						const wrap = await this.wrap(
+						await this.wrap(
 							account,
 							increaseGasPrice,
 							web3Util,
 							ethAmount,
 							transaction,
 						);
-
-						if (!wrap)
-							this.errorHandler(
-								this.STATUS_CODE.BAD_REQUEST,
-								'Wrap failed',
-							);
 					} else {
 						const wethAmount = wethBalance.amount;
-						const unwrap = await this.unwrap(
+
+						await this.unwrap(
 							account,
 							increaseGasPrice,
 							web3Util,
 							wethAmount,
 							transaction,
 						);
-
-						if (!unwrap)
-							this.errorHandler(
-								this.STATUS_CODE.BAD_REQUEST,
-								'Unwrap failed',
-							);
 					}
 				} catch (error) {
 					isLastTxError = true;
