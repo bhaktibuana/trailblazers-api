@@ -132,7 +132,7 @@ export class TransactionController extends Controller {
 
 			this.response(
 				res,
-				'Transaction stopped',
+				'Transaction status',
 				this.STATUS_CODE.OK,
 				this.transactionRes.status(result),
 			);
