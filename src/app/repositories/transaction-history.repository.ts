@@ -1,4 +1,4 @@
-import { query, Response } from 'express';
+import { Response } from 'express';
 import {
 	FindAttributeOptions,
 	InferCreationAttributes,
@@ -34,7 +34,13 @@ export class TransactionHistoryRepository extends Repository {
 		let result: TransactionHistory | null = null;
 
 		try {
-			result = await TransactionHistory.findOne({ where, attributes });
+			result = await TransactionHistory.findOne({
+				where: {
+					...where,
+					deleted_at: null,
+				},
+				attributes,
+			});
 		} catch (error) {
 			await this.catchErrorHandler(res, error, this.findOne.name);
 		}
@@ -105,7 +111,7 @@ export class TransactionHistoryRepository extends Repository {
 		try {
 			await TransactionHistory.update(
 				{ ...payload, updated_at: dayjs() },
-				{ where: { id } },
+				{ where: { id, deleted_at: null } },
 			);
 			result = await this.findOneById(res, id);
 		} catch (error) {

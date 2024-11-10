@@ -32,7 +32,13 @@ export class TransactionRepository extends Repository {
 		let result: Transaction | null = null;
 
 		try {
-			result = await Transaction.findOne({ where, attributes });
+			result = await Transaction.findOne({
+				where: {
+					...where,
+					deleted_at: null,
+				},
+				attributes,
+			});
 		} catch (error) {
 			await this.catchErrorHandler(res, error, this.findOne.name);
 		}
@@ -103,7 +109,7 @@ export class TransactionRepository extends Repository {
 		try {
 			await Transaction.update(
 				{ status, updated_at: dayjs() },
-				{ where: { id } },
+				{ where: { id, deleted_at: null } },
 			);
 			result = await this.findOneById(res, id);
 		} catch (error) {
@@ -128,7 +134,13 @@ export class TransactionRepository extends Repository {
 		let results: Transaction[] = [];
 
 		try {
-			results = await Transaction.findAll({ where, attributes });
+			results = await Transaction.findAll({
+				where: {
+					...where,
+					deleted_at: null,
+				},
+				attributes,
+			});
 		} catch (error) {
 			await this.catchErrorHandler(res, error, this.findAll.name);
 		}
