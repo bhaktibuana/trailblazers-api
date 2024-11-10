@@ -345,12 +345,25 @@ export class TransactionService extends Service {
 							.TRANSACTION_HISTORY_STATUS_PENDING,
 						amount,
 					});
+
+					if (!txHistory)
+						this.errorHandler(
+							this.STATUS_CODE.BAD_REQUEST,
+							'Failed to create tx history',
+						);
+
 					txHistory = await this.transactionHistoryRepo.findOneById(
 						null,
 						txHistory?.id as number,
 					);
 				})
 				.on('receipt', async (receipt) => {
+					if (!txHistory)
+						this.errorHandler(
+							this.STATUS_CODE.BAD_REQUEST,
+							'Failed to create tx history',
+						);
+
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
@@ -374,6 +387,12 @@ export class TransactionService extends Service {
 					isSuccess = true;
 				})
 				.on('error', async (error) => {
+					if (!txHistory)
+						this.errorHandler(
+							this.STATUS_CODE.BAD_REQUEST,
+							'Failed to create tx history',
+						);
+
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
@@ -481,12 +500,25 @@ export class TransactionService extends Service {
 							.TRANSACTION_HISTORY_STATUS_PENDING,
 						amount,
 					});
+
+					if (!txHistory)
+						this.errorHandler(
+							this.STATUS_CODE.BAD_REQUEST,
+							'Failed to create tx history',
+						);
+
 					txHistory = await this.transactionHistoryRepo.findOneById(
 						null,
 						txHistory?.id as number,
 					);
 				})
 				.on('receipt', async (receipt) => {
+					if (!txHistory)
+						this.errorHandler(
+							this.STATUS_CODE.BAD_REQUEST,
+							'Failed to create tx history',
+						);
+
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
@@ -510,6 +542,12 @@ export class TransactionService extends Service {
 					isSuccess = true;
 				})
 				.on('error', async (error) => {
+					if (!txHistory)
+						this.errorHandler(
+							this.STATUS_CODE.BAD_REQUEST,
+							'Failed to create tx history',
+						);
+
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
@@ -612,22 +650,34 @@ export class TransactionService extends Service {
 							'ether',
 						);
 
-						await this.wrap(
+						const wrap = await this.wrap(
 							account,
 							increaseGasPrice,
 							web3Util,
 							ethAmount,
 							transaction,
 						);
+
+						if (!wrap)
+							this.errorHandler(
+								this.STATUS_CODE.BAD_REQUEST,
+								'Wrap failed',
+							);
 					} else {
 						const wethAmount = wethBalance.amount;
-						await this.unwrap(
+						const unwrap = await this.unwrap(
 							account,
 							increaseGasPrice,
 							web3Util,
 							wethAmount,
 							transaction,
 						);
+
+						if (!unwrap)
+							this.errorHandler(
+								this.STATUS_CODE.BAD_REQUEST,
+								'Unwrap failed',
+							);
 					}
 				} catch (error) {
 					isLastTxError = true;
