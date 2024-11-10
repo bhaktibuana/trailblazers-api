@@ -181,21 +181,11 @@ export class Helper {
 	 * @returns
 	 */
 	public static generateDiffTimeMS(startDate: Date) {
-		console.log('startDate', startDate);
 		const startedAt = dayjs(startDate);
-		console.log('startedAt', startedAt);
 		const finishedAt = dayjs();
-		console.log('finishedAt', finishedAt);
 		const differenceInSeconds = finishedAt.diff(startedAt, 'seconds');
-		console.log('differenceInSeconds', differenceInSeconds);
 		const minutes = Math.floor(differenceInSeconds / 60);
-		console.log('minutes', minutes);
 		const seconds = differenceInSeconds % 60;
-		console.log('seconds', seconds);
-		console.log(
-			'result',
-			`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`,
-		);
 		return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 	}
 }
