@@ -7,29 +7,34 @@ import {
 } from 'sequelize';
 
 import { MySQL } from '@/shared/utils';
-import { TransactionHistory } from '@/app/models/transaction-history.model';
+import { Transaction } from '@/app/models/transaction.model';
 
-export class Transaction extends Model<
-	InferAttributes<Transaction>,
-	InferCreationAttributes<Transaction>
+export class TransactionHistory extends Model<
+	InferAttributes<TransactionHistory>,
+	InferCreationAttributes<TransactionHistory>
 > {
 	public id?: number;
-	public address!: string;
+	public transaction_id!: number;
+	public transaction_hash!: string;
+	public method!: string;
 	public status!: string;
-	public network_type!: string;
+	public amount!: string;
+	public transaction_fee?: string;
+	public transaction_time?: string;
+	public finished_at?: Date;
 	public created_at?: Date;
 	public updated_at?: Date;
 	public deleted_at?: Date;
 
 	public static associate() {
-		Transaction.hasOne(TransactionHistory, {
-			as: 'transaction_histories',
+		TransactionHistory.belongsTo(Transaction, {
+			as: 'transactions',
 			foreignKey: 'transaction_id',
 		});
 	}
 }
 
-Transaction.init(
+TransactionHistory.init(
 	{
 		id: {
 			type: DataTypes.INTEGER,
@@ -37,7 +42,20 @@ Transaction.init(
 			autoIncrement: true,
 			allowNull: false,
 		},
-		address: {
+		transaction_id: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			references: {
+				model: 'transactions',
+				key: 'id',
+			},
+			onDelete: 'CASCADE',
+		},
+		transaction_hash: {
+			type: DataTypes.STRING(255),
+			allowNull: false,
+		},
+		method: {
 			type: DataTypes.STRING(255),
 			allowNull: false,
 		},
@@ -45,9 +63,21 @@ Transaction.init(
 			type: DataTypes.STRING(255),
 			allowNull: false,
 		},
-		network_type: {
+		amount: {
 			type: DataTypes.STRING(255),
 			allowNull: false,
+		},
+		transaction_fee: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+		},
+		transaction_time: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+		},
+		finished_at: {
+			type: DataTypes.DATE,
+			allowNull: true,
 		},
 		created_at: {
 			type: DataTypes.DATE,
@@ -65,7 +95,7 @@ Transaction.init(
 		},
 	},
 	{
-		tableName: 'transactions',
+		tableName: 'transaction_histories',
 		freezeTableName: false,
 		timestamps: false,
 		sequelize: MySQL.getMainDbConnection(),

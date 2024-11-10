@@ -11,5 +11,7 @@ export class TransactionRouter extends Router<TransactionController> {
 			'auth',
 		]);
 		this.get('/rpc-list', this.controller.rpcList);
+		this.post('/start', this.controller.start, ['auth']);
+		this.post('/stop', this.controller.stop, ['auth']);
 	}
 }

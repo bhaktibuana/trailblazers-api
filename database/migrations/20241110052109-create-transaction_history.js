@@ -3,14 +3,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.createTable('transactions', {
+		await queryInterface.createTable('transaction_histories', {
 			id: {
 				type: Sequelize.INTEGER,
 				primaryKey: true,
 				autoIncrement: true,
 				allowNull: false,
 			},
-			address: {
+			transaction_id: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'transactions',
+					key: 'id',
+				},
+				onDelete: 'CASCADE',
+			},
+			transaction_hash: {
+				type: Sequelize.STRING(255),
+				allowNull: false,
+			},
+			method: {
 				type: Sequelize.STRING(255),
 				allowNull: false,
 			},
@@ -18,9 +31,21 @@ module.exports = {
 				type: Sequelize.STRING(255),
 				allowNull: false,
 			},
-			network_type: {
+			amount: {
 				type: Sequelize.STRING(255),
 				allowNull: false,
+			},
+			transaction_fee: {
+				type: Sequelize.STRING(255),
+				allowNull: true,
+			},
+			transaction_time: {
+				type: Sequelize.STRING(255),
+				allowNull: true,
+			},
+			finished_at: {
+				type: Sequelize.DATE,
+				allowNull: true,
 			},
 			created_at: {
 				type: Sequelize.DATE,
@@ -40,6 +65,6 @@ module.exports = {
 	},
 
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable('transactions');
+		await queryInterface.dropTable('transaction_histories');
 	},
 };

@@ -94,3 +94,9 @@ export interface I_RpcListSvcResult {
 	network_type: T_NetworkType;
 	rpc_list: (I_RpcData & I_RpcLatency)[];
 }
+
+export interface I_StartSvcResult {
+	network_type: T_NetworkType;
+	address: string;
+	start_at: Date;
+}

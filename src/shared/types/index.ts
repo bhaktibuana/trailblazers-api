@@ -23,3 +23,9 @@ export type T_TokenName = 'eth' | 'weth';
 export type T_GetBalanceSvcResult = I_GetBalanceSvcResult & {
 	[key in T_TokenName]: I_BalanceResult;
 };
+
+export type T_TransactionStatus = 'ongoing' | 'stopped';
+
+export type T_TransactionHistoryMethod = 'wrap' | 'unwrap';
+
+export type T_TransactionHistoryStatus = 'pending' | 'reverted' | 'competed';

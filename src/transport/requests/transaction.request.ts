@@ -1,4 +1,4 @@
-import { IsIn, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 import { Constant } from '@/shared/constants';
@@ -27,4 +27,21 @@ export class RpcListReqQuery {
 		},
 	)
 	network_type!: T_NetworkType;
+}
+
+export class StartReqBody {
+	@IsNumber()
+	@IsNotEmpty()
+	@Min(1, {
+		message: 'transaction_count must be greater than 0',
+	})
+	transaction_count!: number;
+
+	@Transform(({ value }) => {
+		if (!value) return 0;
+		return parseFloat(value);
+	})
+	@IsNumber()
+	@IsNotEmpty()
+	increase_gas_price_percentage!: number;
 }

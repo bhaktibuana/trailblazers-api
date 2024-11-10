@@ -153,6 +153,7 @@ export abstract class Controller {
 	/**
 	 * Handle SystemLog to DB
 	 *
+	 * @param res
 	 * @param functionName
 	 * @param data
 	 * @param status

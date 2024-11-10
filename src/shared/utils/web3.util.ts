@@ -145,9 +145,16 @@ export class Web3 {
 			is_online: false,
 			latency: 0,
 		};
+
 		try {
 			const start = dayjs();
-			await web3.eth.getBlockNumber();
+
+			const timeout = new Promise((_, reject) =>
+				setTimeout(() => reject(new Error('Request timed out')), 2000),
+			);
+
+			await Promise.race([web3.eth.getBlockNumber(), timeout]);
+
 			result.latency = dayjs().diff(start);
 			result.is_online = true;
 		} catch (error) {

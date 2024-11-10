@@ -11,7 +11,7 @@ declare namespace e {
 		{
 			base_url: string;
 			request_id: string;
-			account: I_Account
+			account: I_Account;
 		}
 	>;
 }

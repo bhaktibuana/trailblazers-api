@@ -33,13 +33,14 @@ export abstract class Service {
 	/**
 	 * Handle SystemLog to DB
 	 *
+	 * @param res
 	 * @param functionName
 	 * @param data
 	 * @param status
 	 * @param slug
 	 */
 	protected async systemLog(
-		res: Response,
+		res: Response | null,
 		functionName: string,
 		data: object | unknown = {},
 		status: 'success' | 'failed' = 'failed',
@@ -50,22 +51,27 @@ export abstract class Service {
 			app_name: Constant.app.APP_NAME,
 			class_name: this.constructor.name,
 			function_name: functionName,
-			request_id: (res as Res).locals.request_id,
 			slug,
 			status,
 			data,
 		};
+
+		if (res) {
+			systemLog.payload.request_id = (res as Res).locals.request_id;
+		}
+
 		await systemLog.save();
 	}
 
 	/**
 	 * Service Catch Error Handler
 	 *
+	 * @param res
 	 * @param error
 	 * @param functionName
 	 */
 	protected async catchErrorHandler(
-		res: Response,
+		res: Response | null,
 		error: unknown,
 		functionName: string,
 	): Promise<void> {

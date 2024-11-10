@@ -7,7 +7,7 @@ import { T_AppErrorData } from '@/shared/types';
 import { Constant } from '@/shared/constants';
 import { Res } from '@/shared/types/express';
 
-export abstract class Repository {
+export abstract class Cron {
 	protected readonly STATUS_CODE = StatusCodes;
 
 	/**
