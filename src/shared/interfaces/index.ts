@@ -1,7 +1,14 @@
 import { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import { ContractAbi } from 'web3';
 
-import { T_NetworkType, T_TokenName } from '@/shared/types';
+import {
+	T_NetworkType,
+	T_SortType,
+	T_TokenName,
+	T_TransactionHistoryMethod,
+	T_TransactionHistoryStatus,
+	T_TxHistoryIndexSortBy,
+} from '@/shared/types';
 
 export interface I_Pagination {
 	total_items?: number;
@@ -99,4 +106,18 @@ export interface I_StartSvcResult {
 	network_type: T_NetworkType;
 	address: string;
 	start_at: Date;
+}
+
+export interface I_TxHistoryListQueryPayload {
+	transaction_hash: string;
+	method: T_TransactionHistoryMethod;
+	status: T_TransactionHistoryStatus;
+	start_date: Date;
+	end_date: Date;
+	sort_by: T_TxHistoryIndexSortBy;
+	sort: T_SortType;
+	page: number;
+	per_page: number;
+	address: string;
+	network_type: T_NetworkType;
 }
