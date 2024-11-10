@@ -47,12 +47,27 @@ export class TransactionResponse {
 	 */
 	public stop(payload: Transaction | null) {
 		if (!payload) return null;
-		console.log(payload.created_at);
 		return {
 			network_type: payload.network_type,
 			address: payload.address,
 			status: payload.status,
 			stopped_at: payload.updated_at,
+		};
+	}
+
+	/**
+	 * Status - Transaction Response
+	 *
+	 * @param payload
+	 * @returns
+	 */
+	public status(payload: Transaction | null) {
+		if (!payload) return null;
+		return {
+			network_type: payload.network_type,
+			address: payload.address,
+			status: payload.status,
+			last_updated_at: payload.updated_at,
 		};
 	}
 }

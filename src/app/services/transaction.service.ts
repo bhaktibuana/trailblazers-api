@@ -543,6 +543,7 @@ export class TransactionService extends Service {
 
 	/**
 	 * Process wrap-unwrap transaction - Transaction Service
+	 *
 	 * @param account
 	 * @param reqBody
 	 * @param web3Util
@@ -649,6 +650,40 @@ export class TransactionService extends Service {
 			Constant.transaction.TRANSACTION_STATUS_STOPPED,
 		);
 
+		return null;
+	}
+
+	/**
+	 * Get Status - Transaction Service
+	 *
+	 * @param res
+	 * @returns
+	 */
+	public async status(res: Response): Promise<Transaction | null> {
+		const account = (res as Res).locals.account;
+		const address = account.address.toLowerCase();
+
+		try {
+			const web3Util = new Web3(account.network_type, account.rpc_id);
+			const web3 = web3Util.web3;
+
+			if (!web3)
+				this.errorHandler(
+					this.STATUS_CODE.BAD_REQUEST,
+					'Can not connect to web3 network',
+				);
+
+			web3!.eth.accounts.wallet.remove(account.address);
+
+			const transaction = await this.transactionRepo.findOne(res, {
+				address,
+				network_type: account.network_type,
+			});
+
+			return transaction;
+		} catch (error) {
+			await this.catchErrorHandler(res, error, this.status.name);
+		}
 		return null;
 	}
 }

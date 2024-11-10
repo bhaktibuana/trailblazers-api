@@ -102,7 +102,7 @@ export class TransactionController extends Controller {
 	/**
 	 * Stop ongoing tnx - Transaction Controller
 	 *
-	 * @param req
+	 * @param _req
 	 * @param res
 	 */
 	public async stop(_req: Request, res: Response): Promise<void> {
@@ -117,6 +117,27 @@ export class TransactionController extends Controller {
 			);
 		} catch (error) {
 			await this.catchErrorHandler(res, error, this.stop.name);
+		}
+	}
+
+	/**
+	 * Get Status - Transaction Controller
+	 *
+	 * @param _req
+	 * @param res
+	 */
+	public async status(_req: Request, res: Response): Promise<void> {
+		try {
+			const result = await this.transactionSvc.status(res);
+
+			this.response(
+				res,
+				'Transaction stopped',
+				this.STATUS_CODE.OK,
+				this.transactionRes.status(result),
+			);
+		} catch (error) {
+			await this.catchErrorHandler(res, error, this.status.name);
 		}
 	}
 }
