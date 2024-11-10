@@ -19,7 +19,7 @@ export class Transaction extends Model<
 	public network_type!: string;
 	public created_at?: Date;
 	public updated_at?: Date;
-	public deleted_at?: Date;
+	public deleted_at?: Date | null;
 
 	public static associate() {
 		Transaction.hasOne(TransactionHistory, {

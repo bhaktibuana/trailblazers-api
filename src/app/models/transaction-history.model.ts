@@ -19,16 +19,16 @@ export class TransactionHistory extends Model<
 	public method!: string;
 	public status!: string;
 	public amount!: string;
-	public transaction_fee?: string;
-	public transaction_time?: string;
-	public finished_at?: Date;
+	public transaction_fee?: string | null;
+	public transaction_time?: string | null;
+	public finished_at?: Date | null;
 	public created_at?: Date;
 	public updated_at?: Date;
-	public deleted_at?: Date;
+	public deleted_at?: Date | null;
 
 	public static associate() {
 		TransactionHistory.belongsTo(Transaction, {
-			as: 'transactions',
+			as: 'transaction',
 			foreignKey: 'transaction_id',
 		});
 	}

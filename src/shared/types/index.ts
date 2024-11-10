@@ -29,3 +29,11 @@ export type T_TransactionStatus = 'ongoing' | 'stopped';
 export type T_TransactionHistoryMethod = 'wrap' | 'unwrap';
 
 export type T_TransactionHistoryStatus = 'pending' | 'reverted' | 'competed';
+
+export type T_SortType = 'asc' | 'desc';
+
+export type T_TxHistoryIndexSortBy =
+	| 'created_at'
+	| 'amout'
+	| 'transaction_fee'
+	| 'finished_at';
