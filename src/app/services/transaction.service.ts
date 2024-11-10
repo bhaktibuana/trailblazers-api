@@ -606,6 +606,20 @@ export class TransactionService extends Service {
 
 			while (currentTxCount < txCount) {
 				try {
+					const newTransaction =
+						await this.transactionRepo.findOneById(
+							null,
+							transaction.id as number,
+						);
+
+					if (!newTransaction) {
+						break;
+					} else if (
+						newTransaction.status ===
+						Constant.transaction.TRANSACTION_STATUS_STOPPED
+					) {
+						break;
+					}
 					if (!isLastTxError) {
 						currentTxCount += 1;
 					}
