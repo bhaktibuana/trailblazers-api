@@ -78,3 +78,25 @@ export interface I_GetBalanceSvcResult {
 	address: string;
 	network_type: T_NetworkType;
 }
+
+export interface I_CalculateGasPriceSvcResult {
+	network_type: T_NetworkType;
+	base_gas_price: string;
+	increased_gas_price: string;
+}
+
+export interface I_RpcLatency {
+	is_online: boolean;
+	latency: number | string;
+}
+
+export interface I_RpcListSvcResult {
+	network_type: T_NetworkType;
+	rpc_list: (I_RpcData & I_RpcLatency)[];
+}
+
+export interface I_StartSvcResult {
+	network_type: T_NetworkType;
+	address: string;
+	start_at: Date;
+}

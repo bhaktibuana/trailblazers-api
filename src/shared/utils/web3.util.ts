@@ -1,8 +1,9 @@
 import Web3Js, { Numbers, Web3BaseProvider } from 'web3';
 import { RegisteredSubscription } from 'web3/lib/commonjs/eth.exports';
+import dayjs from 'dayjs';
 
 import { T_NetworkType, T_TokenName } from '@/shared/types';
-import { I_BalanceResult, I_RpcData } from '@/shared/interfaces';
+import { I_BalanceResult, I_RpcData, I_RpcLatency } from '@/shared/interfaces';
 import { Helper } from '@/shared/helpers';
 
 export class Web3 {
@@ -91,8 +92,74 @@ export class Web3 {
 				amount_wei: BigInt(balanceWei).toString(),
 			} as I_BalanceResult;
 		} catch (error) {
-			console.log(error);
 			result = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get gas price
+	 *
+	 * @param increasePercentage
+	 * @returns
+	 */
+	public async getGasPrice(increasePercentage: number) {
+		let result = null;
+
+		const baseMultiplier = 100;
+		const baseDivider = 100;
+
+		try {
+			const web3 = this.web3 as Web3Js<RegisteredSubscription>;
+
+			const gasPrice = BigInt(await web3.eth.getGasPrice());
+			const increasedGasPrice =
+				(gasPrice * BigInt(baseMultiplier + increasePercentage)) /
+				BigInt(baseDivider);
+			const gasPriceHex = web3.utils.toHex(increasedGasPrice);
+
+			result = {
+				base_gas_price: gasPrice,
+				increased_gas_price: increasedGasPrice,
+				gas_price_hex: gasPriceHex,
+			};
+		} catch (error) {
+			result = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get RPC Latency
+	 *
+	 * @param rpc
+	 * @returns
+	 */
+	public async getRpcLatency(rpc: I_RpcData): Promise<I_RpcLatency> {
+		const web3Provider = new Web3Js.providers.HttpProvider(rpc.url);
+		const web3 = new Web3Js(web3Provider);
+
+		const result = {
+			is_online: false,
+			latency: 0,
+		};
+
+		try {
+			const start = dayjs();
+
+			const timeout = new Promise((_, reject) =>
+				setTimeout(() => reject(new Error('Request timed out')), 2000),
+			);
+
+			await Promise.race([web3.eth.getBlockNumber(), timeout]);
+
+			result.latency = dayjs().diff(start);
+			result.is_online = true;
+		} catch (error) {
+			result.latency = 0;
+			result.is_online = false;
 		}
 
 		return result;

@@ -7,6 +7,7 @@ import { Config } from '@/config';
 import { Console, Mongo, MySQL, Network } from '@/shared/utils';
 import { Routers } from '@/transport/routers';
 import { Associate } from '@/app/models/associate';
+import { TransactionCron } from '@/app/crons/transaction.cron';
 
 class Main {
 	private app: Express;
@@ -77,7 +78,12 @@ class Main {
 	/**
 	 * App Background
 	 */
-	private background(): void {}
+	private background(): void {
+		// start transaction scheduler
+		const transactionCron = new TransactionCron();
+		transactionCron.stopOngoingTnx(1);
+		// end transaction scheduler
+	}
 }
 
 new Main();
