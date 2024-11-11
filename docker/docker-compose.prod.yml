@@ -4,6 +4,7 @@ services:
     trailblazers-api:
         image: bhaktibuana/trailblazers-api:latest
         container_name: trailblazers-api
+        restart: on-failure
         ports:
             - 3060:3060
         env_file:
