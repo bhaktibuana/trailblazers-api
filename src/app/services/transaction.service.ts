@@ -331,39 +331,31 @@ export class TransactionService extends Service {
 				gasPrice: gasPrice!.gas_price_hex,
 			};
 
-			let txHistory: TransactionHistory | null = null;
+			let txHistory = await this.transactionHistoryRepo.create(null, {
+				transaction_id: transaction.id as number,
+				transaction_hash: '',
+				method: Constant.transaction.TRANSACTION_HISTORY_METHOD_WRAP,
+				status: Constant.transaction.TRANSACTION_HISTORY_STATUS_PENDING,
+				amount,
+			});
+
+			txHistory = await this.transactionHistoryRepo.findOneById(
+				null,
+				txHistory?.id as number,
+			);
 
 			await web3.eth
 				.sendTransaction(txData)
 				.on('transactionHash', async (txHash) => {
-					txHistory = await this.transactionHistoryRepo.create(null, {
-						transaction_id: transaction.id as number,
-						transaction_hash: txHash,
-						method: Constant.transaction
-							.TRANSACTION_HISTORY_METHOD_WRAP,
-						status: Constant.transaction
-							.TRANSACTION_HISTORY_STATUS_PENDING,
-						amount,
-					});
-
-					if (!txHistory)
-						this.errorHandler(
-							this.STATUS_CODE.BAD_REQUEST,
-							'Failed to create tx history',
-						);
-
-					txHistory = await this.transactionHistoryRepo.findOneById(
+					await this.transactionHistoryRepo.updateById(
 						null,
-						txHistory?.id as number,
+						txHistory!.id as number,
+						{
+							transaction_hash: txHash,
+						},
 					);
 				})
 				.on('receipt', async (receipt) => {
-					if (!txHistory)
-						this.errorHandler(
-							this.STATUS_CODE.BAD_REQUEST,
-							'Failed to create tx history',
-						);
-
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
@@ -387,12 +379,6 @@ export class TransactionService extends Service {
 					isSuccess = true;
 				})
 				.on('error', async (error) => {
-					if (!txHistory)
-						this.errorHandler(
-							this.STATUS_CODE.BAD_REQUEST,
-							'Failed to create tx history',
-						);
-
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
@@ -486,39 +472,31 @@ export class TransactionService extends Service {
 				gasPrice: gasPrice!.gas_price_hex,
 			};
 
-			let txHistory: TransactionHistory | null = null;
+			let txHistory = await this.transactionHistoryRepo.create(null, {
+				transaction_id: transaction.id as number,
+				transaction_hash: '',
+				method: Constant.transaction.TRANSACTION_HISTORY_METHOD_UNWRAP,
+				status: Constant.transaction.TRANSACTION_HISTORY_STATUS_PENDING,
+				amount,
+			});
+
+			txHistory = await this.transactionHistoryRepo.findOneById(
+				null,
+				txHistory?.id as number,
+			);
 
 			await web3.eth
 				.sendTransaction(txData)
 				.on('transactionHash', async (txHash) => {
-					txHistory = await this.transactionHistoryRepo.create(null, {
-						transaction_id: transaction.id as number,
-						transaction_hash: txHash,
-						method: Constant.transaction
-							.TRANSACTION_HISTORY_METHOD_UNWRAP,
-						status: Constant.transaction
-							.TRANSACTION_HISTORY_STATUS_PENDING,
-						amount,
-					});
-
-					if (!txHistory)
-						this.errorHandler(
-							this.STATUS_CODE.BAD_REQUEST,
-							'Failed to create tx history',
-						);
-
-					txHistory = await this.transactionHistoryRepo.findOneById(
+					await this.transactionHistoryRepo.updateById(
 						null,
-						txHistory?.id as number,
+						txHistory!.id as number,
+						{
+							transaction_hash: txHash,
+						},
 					);
 				})
 				.on('receipt', async (receipt) => {
-					if (!txHistory)
-						this.errorHandler(
-							this.STATUS_CODE.BAD_REQUEST,
-							'Failed to create tx history',
-						);
-
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
@@ -542,12 +520,6 @@ export class TransactionService extends Service {
 					isSuccess = true;
 				})
 				.on('error', async (error) => {
-					if (!txHistory)
-						this.errorHandler(
-							this.STATUS_CODE.BAD_REQUEST,
-							'Failed to create tx history',
-						);
-
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
