@@ -556,11 +556,10 @@ export class TransactionService extends Service {
 		let currentTxCount = 0;
 		let isLastTxError = false;
 		let web3: Web3Js<RegisteredSubscription> | null = null;
-
-		web3!.eth.accounts.wallet.add(account.private_key);
 		
 		try {
 			web3 = web3Util.web3 as Web3Js<RegisteredSubscription>;
+			web3!.eth.accounts.wallet.add(account.private_key);
 
 			while (currentTxCount < txCount) {
 				try {
