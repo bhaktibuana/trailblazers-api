@@ -297,7 +297,6 @@ export class TransactionService extends Service {
 
 		try {
 			const web3 = web3Util.web3 as Web3Js<RegisteredSubscription>;
-			web3!.eth.accounts.wallet.add(account.private_key);
 
 			const wethContract = new web3.eth.Contract(
 				wethAbi!.abi,
@@ -378,7 +377,7 @@ export class TransactionService extends Service {
 
 					isSuccess = true;
 				})
-				.on('error', async (error) => {
+				.on('error', async (_error) => {
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
@@ -395,14 +394,7 @@ export class TransactionService extends Service {
 					);
 
 					isSuccess = false;
-
-					this.errorHandler(
-						this.STATUS_CODE.BAD_REQUEST,
-						error.message,
-					);
 				});
-
-			web3!.eth.accounts.wallet.remove(account.address);
 		} catch (error) {
 			isSuccess = false;
 			await this.catchErrorHandler(null, error, this.wrap.name);
@@ -440,7 +432,6 @@ export class TransactionService extends Service {
 
 		try {
 			const web3 = web3Util.web3 as Web3Js<RegisteredSubscription>;
-			web3!.eth.accounts.wallet.add(account.private_key);
 
 			const wethContract = new web3.eth.Contract(
 				wethAbi!.abi,
@@ -519,7 +510,7 @@ export class TransactionService extends Service {
 
 					isSuccess = true;
 				})
-				.on('error', async (error) => {
+				.on('error', async (_error) => {
 					const transactionTime = Helper.generateDiffTimeMS(
 						txHistory?.created_at as Date,
 					);
@@ -536,14 +527,7 @@ export class TransactionService extends Service {
 					);
 
 					isSuccess = false;
-
-					this.errorHandler(
-						this.STATUS_CODE.BAD_REQUEST,
-						error.message,
-					);
 				});
-
-			web3!.eth.accounts.wallet.remove(account.address);
 		} catch (error) {
 			isSuccess = false;
 			await this.catchErrorHandler(null, error, this.unwrap.name);
@@ -573,6 +557,8 @@ export class TransactionService extends Service {
 		let isLastTxError = false;
 		let web3: Web3Js<RegisteredSubscription> | null = null;
 
+		web3!.eth.accounts.wallet.add(account.private_key);
+		
 		try {
 			web3 = web3Util.web3 as Web3Js<RegisteredSubscription>;
 
