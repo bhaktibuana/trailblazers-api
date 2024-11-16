@@ -10,6 +10,12 @@ export class RiceparkApi extends Api {
 		super(Constant.ricepark.API_BASE_URL);
 	}
 
+	/**
+	 * Ricepark Refresh Point
+	 *
+	 * @param reqParams
+	 * @returns
+	 */
 	public async refresh(
 		reqParams: I_RiceparkRefreshReqParams,
 	): Promise<I_RiceparkRefreshResponse | null> {

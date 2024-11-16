@@ -7,7 +7,7 @@ import { Config } from '@/config';
 import { Console, Mongo, MySQL, Network } from '@/shared/utils';
 import { Routers } from '@/transport/routers';
 import { Associate } from '@/app/models/associate';
-import { TransactionCron } from '@/app/crons/transaction.cron';
+import { TransactionCron, RiceparkCron } from '@/app/crons';
 
 class Main {
 	private app: Express;
@@ -83,6 +83,11 @@ class Main {
 		const transactionCron = new TransactionCron();
 		transactionCron.stopOngoingTnx(1);
 		// end transaction scheduler
+
+		// start ricepark scheduler
+		const riceparkCron = new RiceparkCron();
+		riceparkCron.refresh();
+		// end ricepark scheduler
 	}
 }
 
