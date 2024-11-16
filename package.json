@@ -1,6 +1,6 @@
 {
 	"name": "trailblazers-api",
-	"version": "1.0.4",
+	"version": "1.1.0",
 	"description": "Taiko Trailblazers bot API",
 	"main": "./src/cmd/main.ts",
 	"repository": "https://github.com/bhaktibuana/trailblazers-api.git",
@@ -43,6 +43,7 @@
 		"typescript": "^5.5.4"
 	},
 	"dependencies": {
+		"axios": "^1.7.7",
 		"body-parser": "^1.20.2",
 		"chalk": "4.1.2",
 		"class-transformer": "^0.5.1",
