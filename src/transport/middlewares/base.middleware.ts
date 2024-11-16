@@ -69,7 +69,7 @@ export abstract class BaseMiddleware {
 	}
 
 	/**
-	 * Controller Catch Error Handler
+	 * Middleware Catch Error Handler
 	 *
 	 * @param res
 	 * @param error

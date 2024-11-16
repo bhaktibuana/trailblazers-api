@@ -121,3 +121,22 @@ export interface I_TxHistoryListQueryPayload {
 	address: string;
 	network_type: T_NetworkType;
 }
+
+export interface I_RiceparkRefreshReqParams {
+	uid: string;
+	tt_sig: string;
+}
+
+export interface I_RiceparkRefreshResponse {
+	data: {
+		params: string[];
+		status: string;
+		status_message: string;
+		authenticate_url: {
+			url: string;
+			expanded_url: string;
+			display_url: string;
+			indices: number[];
+		}[];
+	};
+}

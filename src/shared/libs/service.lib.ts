@@ -69,26 +69,34 @@ export abstract class Service {
 	 * @param res
 	 * @param error
 	 * @param functionName
+	 * @param throwAppError
 	 */
 	protected async catchErrorHandler(
 		res: Response | null,
 		error: unknown,
 		functionName: string,
+		throwAppError: boolean = true,
 	): Promise<void> {
 		if (error instanceof AppError) {
 			if (error.sourceError === this.constructor.name) {
 				await this.systemLog(res, functionName, error);
-				this.errorHandler(error.statusCode, error.message, error);
+				if (throwAppError) {
+					this.errorHandler(error.statusCode, error.message, error);
+				}
 			}
 		} else {
 			await this.systemLog(res, functionName, error);
 		}
-		const errorMessage =
-			(error as { message: string }).message || 'Internal Server Error';
-		this.errorHandler(
-			this.STATUS_CODE.INTERNAL_SERVER_ERROR,
-			errorMessage,
-			error,
-		);
+
+		if (throwAppError) {
+			const errorMessage =
+				(error as { message: string }).message ||
+				'Internal Server Error';
+			this.errorHandler(
+				this.STATUS_CODE.INTERNAL_SERVER_ERROR,
+				errorMessage,
+				error,
+			);
+		}
 	}
 }
