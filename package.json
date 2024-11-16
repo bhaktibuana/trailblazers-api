@@ -1,6 +1,6 @@
 {
 	"name": "trailblazers-api",
-	"version": "1.1.3",
+	"version": "1.1.4",
 	"description": "Taiko Trailblazers bot API",
 	"main": "./src/cmd/main.ts",
 	"repository": "https://github.com/bhaktibuana/trailblazers-api.git",
@@ -11,7 +11,7 @@
 		"build:prod": "rm -rf dist && cross-env NODE_ENV=production && tsc --project tsconfig.test.json",
 		"build:dev": "rm -rf dist && cross-env NODE_ENV=development && tsc --project tsconfig.test.json",
 		"dev": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only -r tsconfig-paths/register ./src/cmd/main.ts",
-		"start": "cross-env NODE_ENV=production node -r tsconfig-paths/register ./dist/cmd/main.js",
+		"start": "node -r tsconfig-paths/register ./dist/cmd/main.js",
 		"test": "rm -rf __tests__/coverage && jest --clearCache && cross-env NODE_ENV=development jest",
 		"format": "prettier --write \"src/**/*.ts\" \"database/**/*.js\"",
 		"create:migration": "sequelize-cli migration:generate --name",
