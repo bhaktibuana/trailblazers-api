@@ -124,7 +124,7 @@ export abstract class Api {
 	}
 
 	/**
-	 * Service Catch Error Handler
+	 * Api Catch Error Handler
 	 *
 	 * @param res
 	 * @param error
