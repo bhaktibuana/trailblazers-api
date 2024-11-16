@@ -34,8 +34,8 @@ jobs:
 
                       # Update the .env file
                       rm -f .env.dev
-                      echo "NODE_ENV=production" >> .env.dev
-                      echo "DOCKER_ENVIRONMENT=true" > .env.dev
+                      echo "NODE_ENV=development" >> .env.dev
+                      echo "DOCKER_ENVIRONMENT=true" >> .env.dev
                       echo "PORT=${{ secrets.DEV_PORT }}" >> .env.dev
                       echo "BASE_URL=${{ secrets.DEV_BASE_URL }}" >> .env.dev
                       echo "JWT_SECRET_KEY=${{ secrets.DEV_JWT_SECRET_KEY }}" >> .env.dev
@@ -73,7 +73,7 @@ jobs:
                       # Update the .env file
                       rm -f .env.prod
                       echo "NODE_ENV=production" >> .env.prod
-                      echo "DOCKER_ENVIRONMENT=true" > .env.prod
+                      echo "DOCKER_ENVIRONMENT=true" >> .env.prod
                       echo "PORT=${{ secrets.PROD_PORT }}" >> .env.prod
                       echo "BASE_URL=${{ secrets.PROD_BASE_URL }}" >> .env.prod
                       echo "JWT_SECRET_KEY=${{ secrets.PROD_JWT_SECRET_KEY }}" >> .env.prod
