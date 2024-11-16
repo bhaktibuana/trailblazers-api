@@ -135,21 +135,7 @@ export abstract class Api {
 		error: unknown,
 		functionName: string,
 	): Promise<void> {
-		if (error instanceof AppError) {
-			if (error.sourceError === this.constructor.name) {
-				await this.systemLog(res, functionName, error);
-				this.errorHandler(error.statusCode, error.message, error);
-			}
-		} else {
-			await this.systemLog(res, functionName, error);
-		}
-		const errorMessage =
-			(error as { message: string }).message || 'Internal Server Error';
-		this.errorHandler(
-			this.STATUS_CODE.INTERNAL_SERVER_ERROR,
-			errorMessage,
-			error,
-		);
+		await this.systemLog(res, functionName, error);
 	}
 
 	/**
