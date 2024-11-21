@@ -4,14 +4,22 @@ import {
 	InferCreationAttributes,
 	Transaction as SequelizeTransaction,
 	WhereOptions,
+	Op,
+	fn,
+	literal,
+	col,
 } from 'sequelize';
 import dayjs from 'dayjs';
 
 import { Repository } from '@/shared/libs/repository.lib';
 import { Transaction, TransactionHistory } from '@/app/models';
-import { I_Pagination, I_TxHistoryListQueryPayload } from '@/shared/interfaces';
+import {
+	I_Pagination,
+	I_TxHistoryListQueryPayload,
+	I_TxHistoryScoreboardQueryPayload,
+	I_TxHistoryScoreboardResult,
+} from '@/shared/interfaces';
 import { Helper } from '@/shared/helpers';
-import { Op } from 'sequelize';
 
 export class TransactionHistoryRepository extends Repository {
 	constructor() {
@@ -216,5 +224,130 @@ export class TransactionHistoryRepository extends Repository {
 			await this.catchErrorHandler(res, error, this.getList.name);
 		}
 		return result;
+	}
+
+	/**
+	 * Get scoreboard (raw)
+	 *
+	 * @param res
+	 * @param payload
+	 * @returns
+	 */
+	public async scoreboard(
+		res: Response | null,
+		payload: I_TxHistoryScoreboardQueryPayload,
+	): Promise<I_TxHistoryScoreboardResult[]> {
+		let result: TransactionHistory[] = [];
+
+		const where: WhereOptions<TransactionHistory> = {
+			deleted_at: null,
+		};
+
+		if (payload.start_date && payload.end_date) {
+			where.created_at = {
+				[Op.and]: [
+					{ [Op.gte]: payload.start_date }, // Start date condition
+					{ [Op.lte]: payload.end_date }, // End date condition
+				],
+			};
+		} else if (payload.start_date) {
+			where.created_at = {
+				[Op.gte]: payload.start_date, // Only start date
+			};
+		} else if (payload.end_date) {
+			where.created_at = {
+				[Op.lte]: payload.end_date, // Only end date
+			};
+		}
+
+		try {
+			result = await TransactionHistory.findAll({
+				where,
+				include: [
+					{
+						model: Transaction,
+						as: 'transaction',
+						where: {
+							address: payload.address,
+							network_type: payload.network_type,
+						},
+						attributes: ['id'],
+					},
+				],
+				attributes: [
+					'transaction.id',
+					[
+						fn(
+							'COUNT',
+							literal(
+								"CASE WHEN TransactionHistory.status = 'completed' THEN 1 END",
+							),
+						),
+						'completed_tx_count',
+					],
+					[
+						fn(
+							'COUNT',
+							literal(
+								"CASE WHEN TransactionHistory.status = 'pending' THEN 1 END",
+							),
+						),
+						'pending_tx_count',
+					],
+					[
+						fn(
+							'COUNT',
+							literal(
+								"CASE WHEN TransactionHistory.status = 'reverted' THEN 1 END",
+							),
+						),
+						'reverted_tx_count',
+					],
+					[
+						fn(
+							'COUNT',
+							literal(
+								"CASE WHEN TransactionHistory.method = 'wrap' THEN 1 END",
+							),
+						),
+						'wrap_count',
+					],
+					[
+						fn(
+							'COUNT',
+							literal(
+								"CASE WHEN TransactionHistory.method = 'unwrap' THEN 1 END",
+							),
+						),
+						'unwrap_count',
+					],
+					[
+						fn(
+							'SUM',
+							literal(
+								'CASE WHEN TransactionHistory.transaction_fee IS NOT NULL THEN amount END',
+							),
+						),
+						'total_eth_swap',
+					],
+					[
+						fn(
+							'AVG',
+							literal(
+								'CASE WHEN TransactionHistory.transaction_fee IS NOT NULL THEN amount END',
+							),
+						),
+						'avg_eth_swap',
+					],
+					[fn('SUM', col('transaction_fee')), 'total_tx_fee'],
+					[fn('AVG', col('transaction_fee')), 'avg_tx_fee'],
+				],
+				group: ['transaction.id'],
+				raw: true,
+			});
+		} catch (error) {
+			await this.catchErrorHandler(res, error, this.scoreboard.name);
+		}
+		return result as never as I_TxHistoryScoreboardResult[];
 	}
 }

@@ -12,5 +12,6 @@ export class TransactionHistoryRouter extends Router<TransactionHistoryControlle
 		);
 
 		this.get('/list', this.controller.list, ['auth']);
+		this.get('/scoreboard', this.controller.scoreboard, ['auth']);
 	}
 }
