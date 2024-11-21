@@ -140,3 +140,24 @@ export interface I_RiceparkRefreshResponse {
 		}[];
 	};
 }
+
+export interface I_TxHistoryScoreboardQueryPayload {
+	start_date: Date;
+	end_date: Date;
+	address: string;
+	network_type: T_NetworkType;
+}
+
+export interface I_TxHistoryScoreboardResult {
+	id: number;
+	completed_tx_count: number;
+	pending_tx_count: number;
+	reverted_tx_count: number;
+	wrap_count: number;
+	unwrap_count: number;
+	total_eth_swap: number;
+	avg_eth_swap: number;
+	total_tx_fee: number;
+	avg_tx_fee: number;
+	'transaction.id': number;
+}
