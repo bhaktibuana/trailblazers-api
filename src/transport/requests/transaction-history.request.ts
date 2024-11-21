@@ -71,3 +71,17 @@ export class ListReqQuery {
 	@IsNumber()
 	per_page!: number;
 }
+
+export class ScoreboardReqQuery {
+	@IsOptional()
+	@Transform(({ value }) =>
+		value ? dayjs(value).startOf('day').toDate() : undefined,
+	)
+	start_date!: Date;
+
+	@IsOptional()
+	@Transform(({ value }) =>
+		value ? dayjs(value).endOf('day').toDate() : undefined,
+	)
+	end_date!: Date;
+}
