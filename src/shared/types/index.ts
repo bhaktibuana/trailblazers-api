@@ -28,7 +28,7 @@ export type T_TransactionStatus = 'ongoing' | 'stopped';
 
 export type T_TransactionHistoryMethod = 'wrap' | 'unwrap';
 
-export type T_TransactionHistoryStatus = 'pending' | 'reverted' | 'competed';
+export type T_TransactionHistoryStatus = 'pending' | 'reverted' | 'completed';
 
 export type T_SortType = 'asc' | 'desc';
 

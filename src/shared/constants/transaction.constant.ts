@@ -18,7 +18,7 @@ export class TransactionConstant {
 	public readonly TRANSACTION_HISTORY_STATUS_REVERTED: T_TransactionHistoryStatus =
 		'reverted';
 	public readonly TRANSACTION_HISTORY_STATUS_COMPLETED: T_TransactionHistoryStatus =
-		'competed';
+		'completed';
 
 	public readonly MIN_BALANCE_ETH = '0.0001';
 }
