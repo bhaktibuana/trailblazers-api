@@ -161,3 +161,39 @@ export interface I_TxHistoryScoreboardResult {
 	avg_tx_fee: number;
 	'transaction.id': number;
 }
+
+export interface I_NotPxGetUserResponse {
+	myPlace: number;
+	top: {
+		[key: string]: {
+			id: number;
+			firstName: string;
+			lastName: string;
+			balance: number;
+			repaints: number;
+			score: null | number;
+			friends: number;
+			intro: false;
+			userPic: string;
+			league: string;
+			templateId: number;
+			squad: {
+				id: number;
+				name: string;
+				slug: string;
+				logo: string;
+				templateX: null;
+				templateY: null;
+				players: number;
+				totalBalance: number;
+				totalRepaints: number;
+				scoredRepaints: number;
+			};
+			goods: null;
+			refLimit: string;
+			websocketToken: string;
+			created_at: string;
+			achievements: number;
+		};
+	};
+}
