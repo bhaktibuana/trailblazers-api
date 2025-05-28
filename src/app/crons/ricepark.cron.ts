@@ -1,6 +1,9 @@
 import { Cron } from '@/shared/libs/cron.lib';
 import { RiceparkApi } from '@/app/apis';
-import { I_RiceparkRefreshReqParams } from '@/shared/interfaces';
+import {
+	I_RiceparkRefreshReqParams,
+	I_RiceparkRichesWheelReqParams,
+} from '@/shared/interfaces';
 import { Config } from '@/config';
 import { Constant } from '@/shared/constants';
 
@@ -14,7 +17,7 @@ export class RiceparkCron extends Cron {
 	}
 
 	/**
-	 * Refresh point of ricepark every 46 minutes
+	 * Refresh point of ricepark
 	 */
 	public refresh() {
 		const task = async () => {
@@ -31,5 +34,25 @@ export class RiceparkCron extends Cron {
 
 		// execute function every 91 minutes
 		setInterval(task, 91 * 60 * 1000);
+	}
+
+	/**
+	 * Rice to Riches Wheel
+	 */
+	public richesWheel() {
+		const task = async () => {
+			if (Config.app.NODE_ENV === Constant.app.ENV_PROD) {
+				const reqParams: I_RiceparkRichesWheelReqParams = {
+					uid: '1766b6a25ce044dab8af9e17bed51ac4',
+					tt_sig: 'c6a677fa97cc16ba81f9926a7644a71d',
+				};
+				await this.riceparkApi.richesWheel(reqParams);
+			}
+		};
+
+		task();
+
+		// execute function every 24 hours 1 minute
+		setInterval(task, 1441 * 60 * 1000);
 	}
 }

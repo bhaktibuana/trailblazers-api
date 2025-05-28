@@ -87,6 +87,7 @@ class Main {
 		// start ricepark scheduler
 		const riceparkCron = new RiceparkCron();
 		riceparkCron.refresh();
+		riceparkCron.richesWheel();
 		// end ricepark scheduler
 	}
 }
