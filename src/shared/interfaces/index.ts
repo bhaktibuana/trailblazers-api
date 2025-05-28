@@ -141,6 +141,15 @@ export interface I_RiceparkRefreshResponse {
 	};
 }
 
+export interface I_RiceparkRichesWheelReqParams {
+	uid: string;
+	tt_sig: string;
+}
+
+export interface I_RiceparkRichesWheelResponse {
+	data: {};
+}
+
 export interface I_TxHistoryScoreboardQueryPayload {
 	start_date: Date;
 	end_date: Date;
