@@ -94,6 +94,10 @@ export class RiceparkApi extends Api {
 					headers,
 				},
 			);
+			
+			// TODO: this is temporary solution to log the result
+			// Remove this after testing
+			await this.systemLog(null, this.richesWheel.name, result, 'success');
 		} catch (error) {
 			await this.catchErrorHandler(null, error, this.richesWheel.name);
 		}
